@@ -1,0 +1,113 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+}
+
+.navbar-brand img {
+    transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.navbar-brand:hover img {
+    transform: scale(1.04);
+    filter: drop-shadow(0 4px 10px rgba(255, 193, 7, 0.35));
+}
+
+/* Hero-секція */
+.hero-section {
+    background:  #002859 url('https://images.unsplash.com/photo-1550009158-9ebf69173e03?q=80&w=2401&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') center/cover no-repeat;
+    padding: 80px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+#productsGrid .card {
+    transition: all 0.3s ease;
+}
+
+#productsGrid .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+}
+
+#productsGrid .card .card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+.btn {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+
+.add-to-cart-btn:hover {
+    transform: translateY(-2px) scale(1.03);
+}
+
+
+/* Кнопка кошика - hover */
+#cartBtn:hover {
+    background-color: #ffc107 !important;
+    border-color: #ffc107 !important;
+    color: #212529 !important;
+}
+
+/* Кнопки категорій */
+.category-btn.active {
+    background-color: #ffc107 !important;
+    border-color: #ffc107 !important;
+    color: #212529 !important;
+}
+
+.category-btn:not(.active):hover {
+    transform: translateY(-2px);
+}
+
+footer a.text-white {
+    transition: color 0.25s ease, transform 0.25s ease;
+}
+
+footer a.text-white:hover {
+    color: #ffc107 !important;
+    transform: translateY(-2px) scale(1.08);
+}
+
+#cartItems .card {
+    transition: transform 0.25s ease, background-color 0.25s ease;
+}
+
+#cartItems .card:hover {
+    transform: translateX(4px);
+    background-color: #f8f9fa;
+}
+
+#checkoutCard {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+#checkoutCard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Overflow для зображень */
+.overflow-hidden {
+    overflow: hidden;
+}
+
+/* Адаптивність */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 40px 0;
+        text-align: center;
+    }
+}
+.product-card {
+  transition: all 0.3s ease;
+}
+.product-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+#navbarNav{
+  gap: 25px;
+}
