@@ -151,10 +151,16 @@ function displayProducts(products) {
     animateProductCardsOnRender();
 }
 
+function getProductImagePath(product) {
+    const imagePath = product.image || '';
+    const cleanPath = imagePath.replace(/^img\//i, '');
+    return cleanPath ? `img/${cleanPath}` : 'img/images.jpg';
+}
+
 // ========== Створення картки товару ==========
 function createProductCard(product) {
     return `<div class="card" style="width: 18rem;">
-        <img src="img/${product.image}" class="card-img-top" alt="${product.title}">
+        <img src="${getProductImagePath(product)}" class="card-img-top" alt="${product.title}" onerror="this.onerror=null; this.src='img/images.jpg';">
         <div class="card-body">
             <h5 class="card-title">${product.title}</h5>
             <p class="card-text text-primary fw-bold">${product.price} грн </p>
@@ -177,6 +183,7 @@ function addToCart(productId) {
         cart.push({ ...product, quantity: 1 }); // Додаємо новий товар до кошика
     }
     saveJsonCookie('cart', cart, 3600 * 24 * 7); // Зберігаємо кошик у Cookie на 1 тижден
+    localStorage.setItem('cart', JSON.stringify(cart)); // Дублюємо у localStorage для сторінки кошика
 }
 
 
@@ -185,6 +192,7 @@ function loadCart() {
     const savedCart = getJsonCookie('cart');
     if (savedCart !== null) {
         cart = savedCart;
+        localStorage.setItem('cart', JSON.stringify(cart));
         displayCart(); // Відображаємо кошик після завантаження
     }
 }
@@ -206,7 +214,7 @@ function displayCart() {
         cartContainer.innerHTML += `
       <div class="card border-0 border-bottom rounded-0">
         <div class="card-body d-flex align-items-center gap-3 p-3">
-          <img src="img/${product.image}" height="80" >
+          <img src="${getProductImagePath(product)}" height="80" onerror="this.onerror=null; this.src='img/images.jpg';">
           <div class="flex-grow-1">
               <h5 class="card-title mb-1">${product.title}</h5>
               <p class="card-text text-muted mb-1">Кількість: ${product.quantity}</p>
