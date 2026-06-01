@@ -88,6 +88,29 @@ function updateCartCount() {
     }
 }
 
+// ====== Theme (dark / light) handling ======
+function updateThemeToggleIcon() {
+    const btn = document.querySelector('#themeToggle');
+    if (!btn) return;
+    const cur = document.documentElement.getAttribute('data-theme');
+    btn.innerHTML = cur === 'dark' ? '<i class="bi bi-sun-fill"></i>' : '<i class="bi bi-moon-fill"></i>';
+}
+
+function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    try { localStorage.setItem('theme', theme); } catch (e) { }
+    updateThemeToggleIcon();
+}
+
+function initTheme() {
+    let saved = null;
+    try { saved = localStorage.getItem('theme'); } catch (e) { }
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (prefersDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+    updateThemeToggleIcon();
+}
+
 function animateProductCardsOnRender() {
     if (typeof gsap === 'undefined') return;
 
@@ -123,6 +146,7 @@ function animateProductCardsOnRender() {
 
 // ========== Ініціалізація при завантаженні сторінки ==========
 document.addEventListener('DOMContentLoaded', function () {
+    initTheme();
     setupGsapAnimations();
     loadCart(); // Завантажуємо кошик з LocalStorage
     fetchProducts(); // Отримуємо товари з JSON
@@ -148,6 +172,14 @@ document.addEventListener('DOMContentLoaded', function () {
             checkoutForm.reset();
         })
     }
+
+    // Theme toggle button handler
+    const themeBtn = document.querySelector('#themeToggle');
+    themeBtn?.addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+    });
 });
 
 // ========== Отримання товарів з JSON ==========

@@ -1,6 +1,28 @@
+:root {
+    --bg: #f5f5f5;
+    --text: #212529;
+    --muted: #6c757d;
+    --card-bg: #ffffff;
+    --nav-bg: #343a40;
+    --btn-bg: #ffc107;
+    --btn-text: #212529;
+}
+
+[data-theme="dark"] {
+    --bg: #0f1720;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --card-bg: #0b1220;
+    --nav-bg: #0b1220;
+    --btn-bg: #f59e0b;
+    --btn-text: #0b1220;
+}
+
 body {
     font-family: 'Montserrat', sans-serif;
-    background-color: lightgrey
+    background-color: var(--bg);
+    color: var(--text);
+    transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 .navbar-brand img {
@@ -161,4 +183,27 @@ footer a.text-white:hover {
     0% { transform: scale(1); }
     50% { transform: scale(1.12); }
     100% { transform: scale(1); }
+}
+
+/* Override bootstrap backgrounds to use theme variables */
+.navbar {
+    background-color: var(--nav-bg) !important;
+}
+
+.card {
+    background-color: var(--card-bg) !important;
+    color: var(--text) !important;
+}
+
+.btn-warning {
+    background-color: var(--btn-bg) !important;
+    color: var(--btn-text) !important;
+    border-color: var(--btn-bg) !important;
+}
+
+/* Theme toggle button subtle style */
+#themeToggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
