@@ -34,7 +34,7 @@ body {
 }
 
 #productsGrid .card .card-img-top {
-    height: 200px;
+    height: 220px;
     object-fit: cover;
 }
 
@@ -113,6 +113,52 @@ footer a.text-white:hover {
   box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
+.product-info {
+    min-height: 40px;
+}
+
+/* Badge styles */
+.badge-discount {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #dc3545;
+    color: #fff;
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    box-shadow: 0 6px 18px rgba(220,53,69,0.15);
+}
+
+.badge-bestseller {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: linear-gradient(90deg,#ffc107,#ffb703);
+    color: #1b1b1b;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+/* Make sure overlay badges don't break on small screens */
+@media (max-width: 420px) {
+    .badge-discount, .badge-bestseller { font-size: 0.72rem; padding: 4px 6px; }
+}
+
 #navbarNav{
   gap: 25px;
+}
+
+.pulse {
+    animation: pulse-scale 0.28s ease-in-out;
+}
+
+@keyframes pulse-scale {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.12); }
+    100% { transform: scale(1); }
 }

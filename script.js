@@ -4,8 +4,13 @@ function getJsonCookie(cookieName) {
     const targetCookie = allCookies.find(row => row.startsWith(cookieName + '='));
 
     if (targetCookie) {
-        const encodedData = targetCookie.split('=')[1];
-        return JSON.parse(decodeURIComponent(encodedData));
+        try {
+            const encodedData = targetCookie.split('=')[1];
+            return JSON.parse(decodeURIComponent(encodedData));
+        } catch (e) {
+            console.warn('Failed to parse cookie', cookieName, e);
+            return null;
+        }
     }
     return null;
 }
@@ -21,6 +26,9 @@ function saveJsonCookie(cookieName, data, seconds) {
 let products = []; // Масив всіх товарів
 let cart = []; // Масив товарів у кошику
 let currentCategory = 'all'; // Поточна категорія фільтра
+
+const cartBtn = document.querySelector('#cartBtn');
+const cartCountEl = document.querySelector('#cartCount');
 
 // ========== DOM елементи ==========
 const productsGrid = document.querySelector('#productsGrid');
@@ -64,6 +72,19 @@ function setupGsapAnimations() {
                 ease: 'power2.out'
             });
         });
+    }
+}
+
+function updateCartCount() {
+    if (!cartCountEl) return;
+    const totalCount = cart.reduce((sum, it) => sum + (it.quantity || 0), 0);
+    cartCountEl.textContent = totalCount;
+    // небольшой эффект пульсации
+    if (typeof gsap !== 'undefined') {
+        gsap.fromTo(cartCountEl, { scale: 0.8 }, { scale: 1.15, duration: 0.25, yoyo: true, repeat: 1, ease: 'power1.out' });
+    } else {
+        cartCountEl.classList.add('pulse');
+        setTimeout(() => cartCountEl.classList.remove('pulse'), 300);
     }
 }
 
@@ -159,14 +180,30 @@ function getProductImagePath(product) {
 
 // ========== Створення картки товару ==========
 function createProductCard(product) {
-    return `<div class="card" style="width: 18rem;">
-        <img src="${getProductImagePath(product)}" class="card-img-top" alt="${product.title}" onerror="this.onerror=null; this.src='img/images.jpg';">
-        <div class="card-body">
-            <h5 class="card-title">${product.title}</h5>
-            <p class="card-text text-primary fw-bold">${product.price} грн </p>
-            <button onclick="addToCart(${product.id})"  class="btn btn-warning add-to-cart-btn"> <i class="bi bi-cart-plus"></i> В кошик</button>
-        </div>
-    </div>`;
+        const hasDiscount = product.discount && Number(product.discount) > 0;
+        const originalPrice = Number(product.price) || 0;
+        const discountedPrice = hasDiscount ? Math.round(originalPrice * (1 - Number(product.discount) / 100)) : originalPrice;
+        const shortInfo = product.shortDescription || product.description || '';
+
+        const bestsellerBadge = product.bestSeller ? `<div class="badge-bestseller">Лідер продажів</div>` : '';
+        const discountBadge = hasDiscount ? `<div class="badge-discount">-${product.discount}%</div>` : '';
+
+        return `
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card h-100 product-card position-relative overflow-hidden">
+                ${bestsellerBadge}
+                ${discountBadge}
+                <img src="${getProductImagePath(product)}" class="card-img-top" alt="${product.title}" onerror="this.onerror=null; this.src='img/images.jpg';">
+                <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">${product.title}</h5>
+                        <p class="card-text text-primary fw-bold mb-1">${discountedPrice} грн</p>
+                        ${shortInfo ? `<p class="product-info small text-muted mb-2">${shortInfo}</p>` : ''}
+                        <div class="mt-auto">
+                            <button onclick="addToCart(${product.id})"  class="btn btn-warning add-to-cart-btn w-100"> <i class="bi bi-cart-plus"></i> В кошик</button>
+                        </div>
+                </div>
+            </div>
+        </div>`;
 }
 
 // ========== Робота з кошиком ==========
@@ -184,6 +221,38 @@ function addToCart(productId) {
     }
     saveJsonCookie('cart', cart, 3600 * 24 * 7); // Зберігаємо кошик у Cookie на 1 тижден
     localStorage.setItem('cart', JSON.stringify(cart)); // Дублюємо у localStorage для сторінки кошика
+    updateCartCount();
+    // Анімація польоту картинки до кошика
+    try {
+        const img = document.querySelector(`#productsGrid img[alt="${product.title}"]`);
+        if (img) animateAddToCart(img);
+    } catch (e) {
+        // ignore
+    }
+}
+
+function animateAddToCart(imgEl) {
+    if (!imgEl || !cartBtn) return;
+    if (typeof gsap === 'undefined') {
+        // простой эффект: пульс кнопки
+        cartBtn.classList.add('pulse');
+        setTimeout(() => cartBtn.classList.remove('pulse'), 400);
+        return;
+    }
+
+    const clone = imgEl.cloneNode(true);
+    const rect = imgEl.getBoundingClientRect();
+    clone.style.position = 'fixed';
+    clone.style.left = rect.left + 'px';
+    clone.style.top = rect.top + 'px';
+    clone.style.width = rect.width + 'px';
+    clone.style.height = rect.height + 'px';
+    clone.style.zIndex = 9999;
+    clone.style.pointerEvents = 'none';
+    document.body.appendChild(clone);
+
+    const cartRect = cartBtn.getBoundingClientRect();
+    gsap.to(clone, { duration: 0.8, x: cartRect.left - rect.left, y: cartRect.top - rect.top, scale: 0.2, opacity: 0.6, ease: 'power2.inOut', onComplete() { clone.remove(); gsap.fromTo(cartBtn, { scale: 0.9 }, { scale: 1.05, duration: 0.2, yoyo: true, repeat: 1 }); } });
 }
 
 
