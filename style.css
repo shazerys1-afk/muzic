@@ -207,3 +207,18 @@ footer a.text-white:hover {
     align-items: center;
     justify-content: center;
 }
+
+/* Повідомлення про майбутні товари і самовивіз */
+.store-notice {
+    background-color: var(--card-bg);
+    color: var(--text);
+    border: 1px solid rgba(0,0,0,0.06);
+}
+.store-notice a {
+    color: var(--btn-bg);
+    font-weight: 600;
+    text-decoration: none;
+}
+.store-notice a:hover {
+    text-decoration: underline;
+}
